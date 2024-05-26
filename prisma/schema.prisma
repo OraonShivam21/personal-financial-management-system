@@ -22,7 +22,7 @@ model Transaction {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   userId    String    @db.ObjectId
   categoryId String   @db.ObjectId
-  type      TransactionType    // "income" or "expense"
+  type      TransactionType   @default(expense)    // "income" or "expense"
   amount    Float
   date      DateTime  @default(now())
   description String?

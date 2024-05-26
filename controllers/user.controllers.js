@@ -78,7 +78,7 @@ const login = async (req, res) => {
     const decryptedPassword = decrypt(JSON.parse(userFound.password));
     if (decryptedPassword !== password) throw "Invalid password!";
 
-    const accessToken = jwt.sign({ userID: userFound._id }, secretKey, {
+    const accessToken = jwt.sign({ userID: userFound.id }, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: "1day",
     });
 

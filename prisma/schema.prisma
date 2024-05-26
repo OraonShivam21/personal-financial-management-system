@@ -12,7 +12,9 @@ model User {
   name      String
   email     String    @unique
   password  String
+  createdAt DateTime  @default(now())
   transactions Transaction[]
+  categories Category[]
   budgets   Budget[]
 }
 
@@ -20,7 +22,7 @@ model Transaction {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   userId    String    @db.ObjectId
   categoryId String   @db.ObjectId
-  type      String    // "income" or "expense"
+  type      TransactionType    // "income" or "expense"
   amount    Float
   date      DateTime  @default(now())
   description String?
@@ -32,7 +34,11 @@ model Transaction {
 model Category {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   name      String
+  userId    String    @db.ObjectId
   description String?
+  createdAt DateTime  @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
   transactions Transaction[]
   budgets Budget[]
 }
@@ -44,7 +50,13 @@ model Budget {
   amount    Float
   startDate DateTime
   endDate   DateTime
+  createdAt DateTime  @default(now())
 
   user      User      @relation(fields: [userId], references: [id])
   category  Category  @relation(fields: [categoryId], references: [id])
+}
+
+enum TransactionType {
+  income
+  expense
 }

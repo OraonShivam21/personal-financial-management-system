@@ -1,13 +1,6 @@
 const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-
-const secretKey = crypto
-  .createHash("sha256")
-  .update(String(process.env.SECRET_KEY))
-  .digest("base64")
-  .substring(0, 32);
 
 const auth = async (req, res, next) => {
   if (
@@ -16,19 +9,19 @@ const auth = async (req, res, next) => {
   ) {
     const token = req.headers.authorization?.split(" ")[1];
     try {
-      const decoded = jwt.verify(token, secretKey);
+      const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
       if (!decoded) throw "Unauthorized - You're not authorized!";
       
       const userFound = await prisma.user.findUnique({
         where: {
-          _id: decoded.userID,
+          id: decoded.userID,
         },
       });
       req.userId = userFound._id;
-      console.log(userFound.name);
       next();
     } catch (error) {
+      console.log(error);
       res.status(401).json({ error });
     }
   } else {

@@ -60,6 +60,8 @@ These are the specified routes for this API:
     ```
 
 ****
+**Note: From here on all the routes are protected, so for accessing these routes, users have to login with their account and give the jwt token in the headers.authorization***
+
 - **Category**
     
     ```Create Category:``` **/category**

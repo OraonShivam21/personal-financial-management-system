@@ -6,7 +6,7 @@ const createTransaction = async (req, res) => {
     const userId = req.userId;
     const { category, type, amount, description } = req.body;
 
-    let categoryFound = await prisma.category.findUnique({
+    let categoryFound = await prisma.category.findFirst({
       where: {
         name: category,
         userId,

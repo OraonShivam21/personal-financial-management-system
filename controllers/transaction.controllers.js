@@ -51,7 +51,7 @@ const readTransaction = async (req, res) => {
       },
     });
 
-    if (transactions.length == 0) throw "You haven't made any transaction yet!";
+    if (transactions.length == 0) throw "You haven't made any transactions yet!";
 
     res
       .status(200)

@@ -16,6 +16,7 @@ router
   .route("/:id")
   .get(auth, readTransactionById)
   .patch(auth, updateTransactionById)
+  .patch(auth, updateTransactionById)
   .delete(auth, deleteTransactionById);
 
 module.exports = router;

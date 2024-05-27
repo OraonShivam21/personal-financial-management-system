@@ -1,5 +1,7 @@
 const express = require("express");
 const userRouter = require("./routes/user.routes");
+const transactionRouter = require("./routes/transaction.routes");
+const categoryRouter = require("./routes/category.routes");
 require("dotenv").config();
 
 const app = express();
@@ -15,6 +17,8 @@ app.get("/", (req, res) => {
 
 // defining all the routes
 app.use("/user", userRouter);
+app.use("/transactions", transactionRouter);
+app.use("/category", categoryRouter);
 
 app.listen(PORT, () => {
   try {

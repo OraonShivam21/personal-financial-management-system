@@ -6,34 +6,29 @@ const createTransaction = async (req, res) => {
     const userId = req.userId;
     const { category, type, amount, description } = req.body;
 
-    console.log(req.body);
-    return;
+    const categoryFound = await prisma.category.findUnique({
+      where: {
+        name: category,
+      },
+    });
 
-    // const categoryFound = await prisma.category.findUnique({
-    //   where: {
-    //     name: category,
-    //     userId,
-    //   },
-    // });
+    if (!categoryFound) {
+      await prisma.category.create({
+        data: {
+          name: category,
+        },
+      });
 
-    // if (!categoryFound) {
-    //   await prisma.category.create({
-    //     data: {
-    //       name: category,
-    //       userId,
-    //     },
-    //   });
+      categoryFound = await prisma.category.findUnique({
+        where: {
+          name: category,
+        },
+      });
+    }
 
-    //   categoryFound = await prisma.category.findUnique({
-    //     where: {
-    //       name: category,
-    //     },
-    //   });
-    // }
+    console.log(categoryFound);
 
-    // console.log(categoryFound);
-
-    // res.status(201).json({ message: "Successfully created new transaction" });
+    res.status(201).json({ message: "Successfully created new transaction" });
   } catch (error) {
     console.error("Error creating new transaction");
     console.error(error);

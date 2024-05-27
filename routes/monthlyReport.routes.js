@@ -4,6 +4,7 @@ const {
   getCategoryReport,
   getAllMonthlyReport,
 } = require("../controllers/monthlyReport.controllers");
+const auth = require("../middlewares/auth.middlewares");
 
 const router = express.Router();
 

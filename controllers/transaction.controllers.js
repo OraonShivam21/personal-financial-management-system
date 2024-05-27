@@ -91,7 +91,7 @@ const updateTransactionById = async (req, res) => {
     const transactionId = req.params.id;
     const { category, type, amount, description } = req.body;
 
-    let categoryFound = await prisma.category.findUnique({
+    let categoryFound = await prisma.category.findFirst({
       where: {
         name: category,
         userId,
@@ -113,7 +113,7 @@ const updateTransactionById = async (req, res) => {
         userId,
       },
       update: {
-        category: categoryFound.id,
+        categoryId: categoryFound.id,
         type,
         amount,
         description,

@@ -15,7 +15,7 @@ router.route("/").post(auth, createTransaction).get(auth, readTransaction);
 router
   .route("/:id")
   .get(auth, readTransactionById)
-  .patch(auth, updateTransactionById)
+  .put(auth, updateTransactionById)
   .patch(auth, updateTransactionById)
   .delete(auth, deleteTransactionById);
 

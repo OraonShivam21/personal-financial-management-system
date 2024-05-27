@@ -2,6 +2,7 @@ const express = require("express");
 const userRouter = require("./routes/user.routes");
 const transactionRouter = require("./routes/transaction.routes");
 const categoryRouter = require("./routes/category.routes");
+const monthlyReportRouter = require("./routes/monthlyReport.routes");
 require("dotenv").config();
 
 const app = express();
@@ -19,6 +20,7 @@ app.get("/", (req, res) => {
 app.use("/user", userRouter);
 app.use("/transactions", transactionRouter);
 app.use("/category", categoryRouter);
+app.use("/monthly-report", monthlyReportRouter);
 
 app.listen(PORT, () => {
   try {

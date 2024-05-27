@@ -5,6 +5,7 @@ const {
   getCategoryWithId,
   updateCategoryWithId,
   deleteCategoryWithId,
+  categoryWiseExpenseTracking,
 } = require("../controllers/category.controllers");
 const auth = require("../middlewares/auth.middlewares");
 
@@ -18,5 +19,7 @@ router
   .put(auth, updateCategoryWithId)
   .patch(auth, updateCategoryWithId)
   .delete(auth, deleteCategoryWithId);
+
+router.route("/type/:category").get(auth, categoryWiseExpenseTracking);
 
 module.exports = router;

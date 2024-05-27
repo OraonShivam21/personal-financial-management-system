@@ -113,10 +113,37 @@ const deleteCategoryWithId = async (req, res) => {
   }
 };
 
+const categoryWiseExpenseTracking = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const categoryName = req.params.category;
+
+    const categoryTransaction = await prisma.category.findMany({
+      where: {
+        name: categoryName,
+        userId,
+      },
+      include: {
+        transactions: true, 
+      },
+    });
+
+    if (categoryTransaction.length === 0)
+      throw "You haven't created this category yet!";
+
+    res.status(200).json({ transactions: categoryTransaction });
+  } catch (error) {
+    console.error("Error while fetching category wise expenses");
+    console.error(error);
+    res.status(400).json({ error });
+  }
+};
+
 module.exports = {
   createCategory,
   getAllCategories,
   getCategoryWithId,
   updateCategoryWithId,
   deleteCategoryWithId,
+  categoryWiseExpenseTracking,
 };

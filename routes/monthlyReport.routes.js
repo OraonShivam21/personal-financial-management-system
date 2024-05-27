@@ -12,6 +12,6 @@ router.route("/type/:type").get(auth, getExpenseOrIncomeReport);
 
 router.route("/category/:category").get(auth, getCategoryReport);
 
-router.route("/all-report").get(auth, getAllMonthlyReport);
+router.route("/all-report").post(auth, getAllMonthlyReport);
 
 module.exports = router;

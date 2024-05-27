@@ -306,7 +306,15 @@ These are the specified routes for this API:
 
     ```Monthly Report on Category:``` **/monthly-report/all-report**
 
-    ```Method:``` **GET**
+    ```Method:``` **POST**
+
+    ```Input Data:```
+    ```javascript
+    {
+        "type": "income or expense",
+        "category": "any pre-defined category (defined by user)"
+    }
+    ```
 
     ```Result:```
     ```javascript

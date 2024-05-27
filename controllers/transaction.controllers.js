@@ -6,29 +6,35 @@ const createTransaction = async (req, res) => {
     const userId = req.userId;
     const { category, type, amount, description } = req.body;
 
-    const categoryFound = await prisma.category.findUnique({
+    let categoryFound = await prisma.category.findUnique({
       where: {
         name: category,
+        userId,
       },
     });
 
     if (!categoryFound) {
-      await prisma.category.create({
+      categoryFound = await prisma.category.create({
         data: {
           name: category,
-        },
-      });
-
-      categoryFound = await prisma.category.findUnique({
-        where: {
-          name: category,
+          userId,
         },
       });
     }
 
-    console.log(categoryFound);
+    const transaction = await prisma.transaction.create({
+      data: {
+        userId,
+        categoryId: categoryFound.id,
+        type,
+        amount,
+        description,
+      },
+    });
 
-    res.status(201).json({ message: "Successfully created new transaction" });
+    res
+      .status(201)
+      .json({ message: "Successfully created new transaction", transaction });
   } catch (error) {
     console.error("Error creating new transaction");
     console.error(error);
@@ -57,11 +63,99 @@ const readTransaction = async (req, res) => {
   }
 };
 
-const readTransactionById = (req, res) => {};
+const readTransactionById = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const transactionId = req.params.id;
 
-const updateTransactionById = (req, res) => {};
+    const transactionFound = await prisma.transaction.findUnique({
+      where: {
+        id: transactionId,
+        userId,
+      },
+    });
 
-const deleteTransactionById = (req, res) => {};
+    if (!transactionFound) throw "Transaction not found!";
+
+    res.status(200).json({ transaction: transactionFound });
+  } catch (error) {
+    console.error("Error fetching transaction");
+    console.error(error);
+    res.status(400).json({ error });
+  }
+};
+
+const updateTransactionById = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const transactionId = req.params.id;
+    const { category, type, amount, description } = req.body;
+
+    let categoryFound = await prisma.category.findUnique({
+      where: {
+        name: category,
+        userId,
+      },
+    });
+
+    if (!categoryFound) {
+      categoryFound = await prisma.category.create({
+        data: {
+          name: category,
+          userId,
+        },
+      });
+    }
+
+    const transaction = await prisma.transaction.upsert({
+      where: {
+        id: transactionId,
+        userId,
+      },
+      update: {
+        category: categoryFound.id,
+        type,
+        amount,
+        description,
+      },
+      create: {
+        userId,
+        categoryId: categoryFound.id,
+        type,
+        amount,
+        description,
+      },
+    });
+
+    res
+      .status(200)
+      .json({ message: "Transaction updated successfully!", transaction });
+  } catch (error) {
+    console.error("Error updating transaction");
+    console.error(error);
+    res.status(400).json({ error });
+  }
+};
+
+const deleteTransactionById = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const transactionId = req.params.id;
+
+    await prisma.transaction.delete({
+      where: {
+        id: transactionId,
+        userId,
+      },
+    });
+
+    res.status(200).json({ message: "Transaction deleted successfully!" });
+  } catch (error) {
+    console.error("Error deleting transaction");
+    console.error(error);
+    res.status(400).json({ error });
+  }
+};
 
 module.exports = {
   createTransaction,

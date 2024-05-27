@@ -105,7 +105,7 @@ const deleteCategoryWithId = async (req, res) => {
       },
     });
 
-    res.status(200).json({ message: "Category successfully deleted!" });
+    res.status(200).json({ message: "Category deleted successfully!" });
   } catch (error) {
     console.error("Error while deleting the category");
     console.error(error);

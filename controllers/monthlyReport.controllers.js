@@ -1,9 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-let transactionTypeReport;
-let transactionCategoryReport;
-
 const getExpenseOrIncomeReport = async (req, res) => {
   try {
     const userId = req.userId;
@@ -76,8 +73,53 @@ const getCategoryReport = async (req, res) => {
   }
 };
 
-const getAllMonthlyReport = (req, res) => {
+const getAllMonthlyReport = async (req, res) => {
   try {
+    const userId = req.userId;
+    const {type, categoryName} = req.body;
+
+    const transactionTypeReport = await prisma.transaction.findMany({
+      where: {
+        userId,
+        type,
+      },
+    });
+
+    if (transactionTypeReport.length === 0)
+      throw "You haven't made any transactions yet!";
+
+    const categoryFound = await prisma.category.findFirst({
+      where: {
+        name: categoryName,
+        userId,
+      },
+    });
+
+    if (!categoryFound) throw "You haven't created this category yet!";
+
+    const transactionsFound = await prisma.transaction.findMany({
+      where: {
+        categoryId: categoryFound.id,
+        userId,
+      },
+    });
+
+    if (transactionsFound.length === 0)
+      throw "You've haven't made any transactions in this category yet!";
+
+    const transactionCategoryReport = transactionsFound.reduce((acc, item) => {
+      return [
+        ...acc,
+        {
+          category: categoryName,
+          type: item.type,
+          amount: item.amount,
+          date: item.date,
+          description: item.description,
+        },
+      ];
+    }, []);
+
     res
       .status(200)
       .json({ report: { transactionTypeReport, transactionCategoryReport } });
